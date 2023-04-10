@@ -25,6 +25,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String role; // user, manager, admin
     private Boolean status; // true, false
 
     private LocalDateTime createdAt; // LocalDateTime -> Timestamp
@@ -41,12 +42,13 @@ public class User {
     }
 
     @Builder
-    public User(Long id, String username, String password, String email, Boolean status, LocalDateTime createdAt,
-            LocalDateTime updateAt) {
+    public User(Long id, String username, String password, String email, String role, Boolean status,
+            LocalDateTime createdAt, LocalDateTime updateAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
         this.status = status;
         this.createdAt = createdAt;
         this.updateAt = updateAt;

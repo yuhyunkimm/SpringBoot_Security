@@ -29,6 +29,16 @@ public class SecurityConfig {
                     System.out.println("디버그 : 로그인 실패 -> " + ex.getMessage());
 
                 });
+
+        // 3. 인증, 권한 필터 설정
+        // http.authorizeHttpRequests().antMatchers(null);
+        http.authorizeHttpRequests(
+                (authorize) -> authorize.antMatchers("/users/**").authenticated()
+                        .antMatchers("/admin/**").hasRole("ADMIN")
+                        // access
+                        .antMatchers("/manager/**").access("hasRole('ADMIN') or hasRole('MANEGER')")
+                        .anyRequest().permitAll());
+
         return http.build();
     }
 }
