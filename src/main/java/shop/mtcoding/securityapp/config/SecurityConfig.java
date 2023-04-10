@@ -9,7 +9,13 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // csrf 잘못된 경로에서 오는 것을 막는다
+        http.csrf().disable(); // postman 접근 해야 함 - CSR할때 사용한다
+        http.formLogin()
+                .loginPage("/loginPage")
+                .loginProcessingUrl("/login") // Post + X-www-formUrlEndcoded
+                .defaultSuccessUrl("/");
         return http.build();
     }
 }
