@@ -25,4 +25,9 @@ public class HelloController {
     public String joinForm() {
         return "joinForm";
     }
+
+    @PostMapping("/join")
+    public String join() {
+        return "redirect:/";
+    }
 }
