@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.securityapp.dto.ResponseDTO;
@@ -39,6 +38,6 @@ public class HelloController {
         UserResponse.JoinDto data = userService.회원가입(joinDTO);
         // SELECT 안되고 (서비스에 트렌젝션이 종료되면서)
         ResponseDTO<?> responseDTO = new ResponseDTO<>().data(data);
-        return ResponseEntity.ok().body(responseDTO);
+        return ResponseEntity.ok(responseDTO);
     }
 }

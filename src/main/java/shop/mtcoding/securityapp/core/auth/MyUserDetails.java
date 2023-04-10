@@ -14,7 +14,7 @@ public class MyUserDetails implements UserDetails {
 
     private User user;
 
-    public MyUserDetails(org.springframework.security.core.userdetails.User user2) {
+    public MyUserDetails(User user) {
         this.user = user;
     }
 
