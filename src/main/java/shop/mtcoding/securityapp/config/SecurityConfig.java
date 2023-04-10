@@ -32,11 +32,11 @@ public class SecurityConfig {
 
         // 3. 인증, 권한 필터 설정
         // http.authorizeHttpRequests().antMatchers(null);
-        http.authorizeHttpRequests(
-                (authorize) -> authorize.antMatchers("/users/**").authenticated()
+        http.authorizeRequests(
+                authroize -> authroize.antMatchers("/users/**").authenticated()
+                        .antMatchers("/manager/**")
+                        .access("hasRole('ADMIN') or hasRole('MANAGER')")
                         .antMatchers("/admin/**").hasRole("ADMIN")
-                        // access
-                        .antMatchers("/manager/**").access("hasRole('ADMIN') or hasRole('MANEGER')")
                         .anyRequest().permitAll());
 
         return http.build();
