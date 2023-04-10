@@ -16,6 +16,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    /*
+     * 1. 트랜잭션 관리
+     * 2. 영속성 객체 변경감지
+     * 3. RequestDTO 받기
+     * 4. 비지니스 로직 처리하기
+     * 5. ResponseDTO 응답하기
+     */
+
+    // 횡단 관심사
     @Transactional
     public User 회원가입(UserRequest.joinDTO joinDTO) {
         String rawPassword = joinDTO.getPassword();
