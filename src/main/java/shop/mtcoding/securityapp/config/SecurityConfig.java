@@ -31,7 +31,9 @@ public class SecurityConfig {
                 // 여기서 다 써버리면 너무 복잡하니 클래스를 따로 빼서 사용 해주자
                 .successHandler((req, resp, authentioncation) -> {
                     System.out.println("디버그 : 로그인이 완료되었습니다");
-
+                    resp.sendRedirect("/");
+                    // 404로 가면 인증 완료
+                    // 인증이 안되면 다시 로그인 페이지로
                 })
                 .failureHandler((req, resp, ex) -> {
                     System.out.println("디버그 : 로그인 실패 -> " + ex.getMessage());
