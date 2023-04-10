@@ -8,7 +8,7 @@ public class UserRequest {
 
     @Getter
     @Setter
-    public class joinDTO {
+    public class JoinDTO {
         private String username;
         private String password;
         private String email;
