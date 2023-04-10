@@ -17,6 +17,9 @@ public class SecurityConfig {
         // 2. Form 로그인 설정
         http.formLogin()
                 .loginPage("/loginForm")
+                // 커스텀 가능
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .loginProcessingUrl("/login") // Post + X-www-formUrlEndcoded
                 // 인증페이지를 기억 해놨다가 성공하면 가는 url
                 .defaultSuccessUrl("/")
