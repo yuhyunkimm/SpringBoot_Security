@@ -15,6 +15,10 @@ import shop.mtcoding.securityapp.dto.UserRequest;
 import shop.mtcoding.securityapp.dto.UserResponse;
 import shop.mtcoding.securityapp.service.UserService;
 
+/*
+ * 로그 레벨 : trace, debug, info, warn, error
+ * Sysout을 남기면 안되는 이유 : 노헙으로 돌릴 시 로그가 남기 때문에 debug로 실행하자
+ */
 @RequiredArgsConstructor
 @Controller
 public class HelloController {
@@ -23,6 +27,12 @@ public class HelloController {
     private String name;
 
     private final UserService userService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login() {
+        return ResponseEntity.ok().body("로그인완료");
+
+    }
 
     // 인증이 필요한 주소를 갓을 때, 인증이 되지 않으니 페이지를 가준다
     @GetMapping("/users/{id}")
