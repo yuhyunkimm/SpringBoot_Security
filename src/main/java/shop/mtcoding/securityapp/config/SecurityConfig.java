@@ -2,14 +2,15 @@ package shop.mtcoding.securityapp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.access.AccessDeniedException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,8 +42,12 @@ public class SecurityConfig {
         // 5. form 로그인 해제
         http.formLogin().disable();
 
-        // 6. httpBasic 정책 해제
+        // 6. httpBasic 정책 해제(BasicAuthenticationFilter 해제)
         http.httpBasic().disable();
+
+        // 필터 등록 -> 지금은 필터 등록이 안된다
+        // http.addFilter(new HELLO());
+        // Filter에서 AuthenticationManager를 걸어준다
 
         // 7. XSS (lucy필터)
 

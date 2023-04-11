@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.securityapp.dto.UserRequest;
 import shop.mtcoding.securityapp.dto.UserResponse;
+import shop.mtcoding.securityapp.dto.UserRequest.LoginDTO;
 import shop.mtcoding.securityapp.model.User;
 import shop.mtcoding.securityapp.model.UserRepository;
 
@@ -35,5 +36,9 @@ public class UserService {
         return new UserResponse.JoinDto(userPS);
         // return new UserResponse.JoinDTO(userPS);
 
+    }
+
+    // 유저 디테일
+    public void 로그인(UserRequest.LoginDTO loginDTO) {
     }
 }
