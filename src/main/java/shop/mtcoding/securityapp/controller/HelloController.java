@@ -1,5 +1,6 @@
 package shop.mtcoding.securityapp.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,9 @@ import shop.mtcoding.securityapp.service.UserService;
 @Controller
 public class HelloController {
 
+    @Value("${meta.name}")
+    private String name;
+
     private final UserService userService;
 
     // 인증이 필요한 주소를 갓을 때, 인증이 되지 않으니 페이지를 가준다
@@ -30,7 +34,7 @@ public class HelloController {
 
     @GetMapping("/")
     public ResponseEntity<?> hello() {
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body(name);
     }
 
     @GetMapping("/loginForm")

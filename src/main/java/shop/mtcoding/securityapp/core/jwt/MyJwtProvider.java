@@ -1,4 +1,6 @@
-import java.util.Date;
+package shop.mtcoding.securityapp.core.jwt;
+
+import java.sql.Date;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
