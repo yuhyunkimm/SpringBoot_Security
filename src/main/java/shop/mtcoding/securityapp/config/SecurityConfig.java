@@ -27,6 +27,7 @@ public class SecurityConfig {
 
     // JWT 필터 등록이 필요함
     public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+        // 6. httpBasic 정책 해제(BasicAuthenticationFilter 해제) => 바꿔치기
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
@@ -55,7 +56,7 @@ public class SecurityConfig {
         http.formLogin().disable();
 
         // 6. httpBasic 정책 해제(BasicAuthenticationFilter 해제)
-        http.httpBasic().disable();
+        // http.httpBasic().disable();
 
         // 필터 등록 -> 지금은 필터 등록이 안된다
         // http.addFilter(new HELLO());
@@ -83,6 +84,11 @@ public class SecurityConfig {
             log.info("인포 : 인증 실패 : " + accessDeniedException.getMessage());
             log.warn("워닝 : 인증 실패 : " + accessDeniedException.getMessage());
             log.error("에러 : 인증 실패 : " + accessDeniedException.getMessage());
+
+            response.setContentType("text/plain; chatset=utf-8");
+            response.setStatus(403);
+            response.getWriter().println("권한 실패");
+
         });
 
         // 11. 인증, 권한 필터 설정

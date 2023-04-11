@@ -16,28 +16,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import shop.mtcoding.securityapp.core.auth.MyUserDetails;
-import shop.mtcoding.securityapp.dto.ResponseDTO;
 import shop.mtcoding.securityapp.model.User;
 
+// 모든 주소에서 발동
+@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-
-    private AuthenticationManager authenticationManager;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.authenticationManager = authenticationManager;
-    }
-
-    private void error(HttpServletResponse resp, Exception e) throws IOException {
-        resp.setStatus(401);
-        resp.setContentType("application/json; charset=utf-8");
-        ResponseDTO<?> responseDto = new ResponseDTO<>().fail(401, "인증 안됨", e.getMessage());
-        ObjectMapper om = new ObjectMapper();
-        String responseBody = om.writeValueAsString(responseDto);
-        resp.getWriter().println(responseBody);
     }
 
     @Override
@@ -45,9 +34,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             throws IOException, ServletException {
         String prefixJwt = request.getHeader(MyJwtProvider.HEADER);
         if (prefixJwt == null) {
-            error(response, new RuntimeException("토큰이 전달되지 않았습니다"));
+            chain.doFilter(request, response);
             return;
         }
+
         String jwt = prefixJwt.replace(MyJwtProvider.TOKEN_PREFIX, "");
         try {
             DecodedJWT decodedJWT = MyJwtProvider.verify(jwt);
@@ -56,20 +46,18 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             User user = User.builder().id(id).role(role).build();
             MyUserDetails myUserDetails = new MyUserDetails(user);
-            Authentication authentication2 = new UsernamePasswordAuthenticationToken(
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
                     myUserDetails,
                     myUserDetails.getPassword(),
                     myUserDetails.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication2);
-
-            chain.doFilter(request, response);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (SignatureVerificationException sve) {
-            error(response, sve);
+            // 토큰이 검증이 안되면
+            log.debug("토큰 검증 실패");
         } catch (TokenExpiredException tee) {
-            error(response, tee);
+            log.debug("토큰 검증 완료");
+        } finally {
+            chain.doFilter(request, response);
         }
-
     }
-
 }

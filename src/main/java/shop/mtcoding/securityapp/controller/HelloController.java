@@ -47,9 +47,9 @@ public class HelloController {
     // 인증이 필요한 주소를 갓을 때, 인증이 되지 않으니 페이지를 가준다
     @GetMapping("/users/{id}")
     public ResponseEntity<?> userCheck(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        String username = myUserDetails.getUser().getUsername();
+        Long userId = myUserDetails.getUser().getId();
         String role = myUserDetails.getUser().getRole();
-        return ResponseEntity.ok().body(username + " : " + role);
+        return ResponseEntity.ok().body(userId + " : " + role);
     }
 
     // user data 직접 접근하는 법
