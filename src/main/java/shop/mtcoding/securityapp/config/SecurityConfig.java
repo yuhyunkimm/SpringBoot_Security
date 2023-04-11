@@ -3,6 +3,7 @@ package shop.mtcoding.securityapp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,6 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.extern.slf4j.Slf4j;
+import shop.mtcoding.securityapp.core.jwt.JwtAuthorizationFilter;
 
 //log남기기
 @Slf4j
@@ -21,6 +23,16 @@ public class SecurityConfig {
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // JWT 필터 등록이 필요함
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
+            super.configure(builder);
+        }
     }
 
     @Bean
@@ -52,7 +64,7 @@ public class SecurityConfig {
         // 7. XSS (lucy필터)
 
         // 8. 커스텀 필터 적용 (시큐리티 필터 교환)
-        // http.apply(null);
+        http.apply(new CustomSecurityFilterManager());
 
         // 9. 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
@@ -84,6 +96,13 @@ public class SecurityConfig {
                         .anyRequest().permitAll());
 
         return http.build();
+    }
+
+    // 인가 할때 필요
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     public CorsConfigurationSource configurationSource() {

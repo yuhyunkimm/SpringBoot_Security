@@ -1,30 +1,31 @@
 package shop.mtcoding.securityapp.controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import lombok.extern.slf4j.Slf4j;
 import shop.mtcoding.securityapp.core.auth.MyUserDetails;
+import shop.mtcoding.securityapp.core.jwt.MyJwtProvider;
 import shop.mtcoding.securityapp.dto.ResponseDTO;
 import shop.mtcoding.securityapp.dto.UserRequest;
 import shop.mtcoding.securityapp.dto.UserResponse;
-import shop.mtcoding.securityapp.dto.UserRequest.LoginDTO;
+import shop.mtcoding.securityapp.model.User;
+import shop.mtcoding.securityapp.model.UserRepository;
 import shop.mtcoding.securityapp.service.UserService;
 
 /*
  * 로그 레벨 : trace, debug, info, warn, error
  * Sysout을 남기면 안되는 이유 : 노헙으로 돌릴 시 로그가 남기 때문에 debug로 실행하자
  */
-
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class HelloController {
@@ -33,11 +34,13 @@ public class HelloController {
     private String name;
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginDTO loginDTO) {
-        userService.로그인(loginDTO);
-        return ResponseEntity.ok().body("로그인완료");
+        String jwt = userService.로그인(loginDTO);
+        return ResponseEntity.ok().header(MyJwtProvider.HEADER, jwt).body("로그인완료");
 
     }
 
@@ -49,8 +52,21 @@ public class HelloController {
         return ResponseEntity.ok().body(username + " : " + role);
     }
 
+    // user data 직접 접근하는 법
+    // 현재 stateless상태여서 찾을 수가 없다
     @GetMapping("/")
     public ResponseEntity<?> hello() {
+        // UserDetails, password, authories 까지 authentication으로 만들어짐
+        // Authentication authentication1 =
+        // authenticationManager.authenticate(authenticationToken);
+
+        // 2번째 방법
+        // User user = userRepository.findByUsername("username").get();
+        // MyUserDetails myUserDetails = new MyUserDetails(user);
+        // Authentication authentication2 = new UsernamePasswordAuthenticationToken(
+        // "ssar",
+        // "1234");
+        // SecurityContextHolder.getContext().setAuthentication(authentication2);
 
         return ResponseEntity.ok().body(name);
     }
