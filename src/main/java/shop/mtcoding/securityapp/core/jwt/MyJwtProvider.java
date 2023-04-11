@@ -1,5 +1,13 @@
 import java.util.Date;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
+import shop.mtcoding.securityapp.model.User;
+
 public class MyJwtProvider {
 
     private static final String SUBJECT = "jwtstudy";
@@ -15,14 +23,14 @@ public class MyJwtProvider {
                 .withClaim("id", user.getId())
                 .withClaim("role", user.getRole())
                 .sign(Algorithm.HMAC512(SECRET));
-        System.out.println("디버그 : 토큰 생성됨");
+
         return TOKEN_PREFIX + jwt;
     }
 
     public static DecodedJWT verify(String jwt) throws SignatureVerificationException, TokenExpiredException {
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SECRET))
                 .build().verify(jwt);
-        System.out.println("디버그 : 토큰 검증됨");
+
         return decodedJWT;
     }
 }
